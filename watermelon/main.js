@@ -5,7 +5,7 @@ var Render = Matter.Render;
 var Runner = Matter.Runner;
 var Bodies = Matter.Bodies;
 var World = Matter.World;
-var Body = Matter.body;
+var Body = Matter.Body;
 
 const engine = Engine.create();
 const render = Render.create({
@@ -74,13 +74,13 @@ window.onkeydown = (event) => {
 		return;
 	switch (event.code) {
 		case "KeyA":
-			Body.setPosition({
+			Body.set(currentBody, "position", {
 				x: currentBody.position.x - 10,
 				y: currentBody.position.y
 			});
 			break;
 		case "KeyD":
-			Body.setPosition({
+			Body.set(currentBody, "position", {
 				x: currentBody.position.x + 10,
 				y: currentBody.position.y
 			});
@@ -89,9 +89,9 @@ window.onkeydown = (event) => {
 			currentBody.isSleeping = false;
 			disableAction = true;
 			setTimeout(() => {
-				addFruit();
 				disableAction = false;
-			}, 1000);
+				addFruit();
+			}, 500);
 			break;
 	}
 };
