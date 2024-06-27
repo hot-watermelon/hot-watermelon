@@ -6,6 +6,7 @@ var Runner = Matter.Runner;
 var Bodies = Matter.Bodies;
 var World = Matter.World;
 var Body = Matter.Body;
+var Events = Matter.Events;
 
 const engine = Engine.create();
 const render = Render.create({
@@ -72,18 +73,20 @@ function addFruit() {
 window.onkeydown = (event) => {
 	if (disableAction)
 		return;
+    
+    const fruitRadius = FRUITS[currentBody.index].radius;
 	switch (event.code) {
 		case "KeyA":
-			Body.set(currentBody, "position", {
-				x: currentBody.position.x - 10,
-				y: currentBody.position.y
-			});
+            Body.set(currentBody, "position", {
+                x: Math.max(currentBody.position.x - 10, 30 + fruitRadius),
+                y: currentBody.position.y
+            });
 			break;
 		case "KeyD":
-			Body.set(currentBody, "position", {
-				x: currentBody.position.x + 10,
-				y: currentBody.position.y
-			});
+            Body.set(currentBody, "position", {
+                x: Math.min(currentBody.position.x + 10, 590 - fruitRadius),
+                y: currentBody.position.y
+            });
 			break;
 		case "KeyS":
 			currentBody.isSleeping = false;
@@ -95,6 +98,29 @@ window.onkeydown = (event) => {
 			break;
 	}
 };
+
+
+Events.on(engine, "collisionStart", (event) => {
+   event.pairs.forEach((collision) => {
+        if (collision.bodyA.index == collision.bodyB.index) {
+            const index = collision.bodyA.index;
+            World.remove(world, [collision.bodyA, collision.bodyB]);
+
+            const newFruit = FRUITS[index + 1];
+            const newBody = Bodies.circle(
+                collision.collision.supports[0].x,
+                collision.collision.supports[0].y,
+                newFruit.radius, {
+                    index: index + 1,
+                    render: {
+                        sprite: { texture: `${newFruit.name}.png` }
+                    }
+                }
+            );
+            World.add(world, newBody);
+       }
+   }); 
+});
 
 
 addFruit();
