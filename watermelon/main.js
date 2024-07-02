@@ -102,6 +102,14 @@ window.onkeydown = (event) => {
 
 Events.on(engine, "collisionStart", (event) => {
    event.pairs.forEach((collision) => {
+		if (collision.bodyA.id == topLine.id || collision.bodyB.id == topLine.id) {
+			setTimeout(() => {
+				if (Matter.Collision.collides(collision.bodyA, collision.bodyB) !== null) {
+					alert("Game Over!!");
+				}
+			}, 1000);
+		}
+
         if (collision.bodyA.index == collision.bodyB.index) {
             const index = collision.bodyA.index;
             World.remove(world, [collision.bodyA, collision.bodyB]);
